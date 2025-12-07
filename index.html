@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RentTrack Pro - Fully Functional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        /* Login */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .login-subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-secondary { background: #64748b; color: white; }
+
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .demo-info {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Dashboard */
+        .dashboard { display: none; }
+        .dashboard.active { display: block; }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 { font-size: 24px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background: var(--bg);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .modal-footer .btn { flex: 1; }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .alert-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .alert-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-card">
+            <h1 class="login-title">RentTrack Pro</h1>
+            <p class="login-subtitle">Fully Functional Rental Management</p>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+            <div class="demo-info">
+                <strong>Demo Credentials:</strong><br>
+                <strong>Admin:</strong> admin@renttrack.com / admin123<br>
+                <strong>Renter:</strong> renter@renttrack.com / renter123
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard">
+        <div class="container">
+            <div class="header">
+                <h1>Admin Dashboard</h1>
+                <button class="btn-sm btn-danger" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="stats-grid" id="adminStats"></div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Renters</h2>
+                    <button class="btn-sm btn-primary" onclick="openAddRenterModal()">+ Add Renter</button>
+                </div>
+                <div id="rentersList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Bills</h2>
+                    <button class="btn-sm btn-primary" onclick="openAddBillModal()">+ Create Bill</button>
+                </div>
+                <div id="billsList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Payment Records</h2>
+                </div>
+                <div id="paymentsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Renter Dashboard -->
+    <div id="renterDashboard" class="dashboard">
+        <div class="container">
+            <div class="header">
+                <h1>My Dashboard</h1>
+                <button class="btn-sm btn-danger" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="stats-grid" id="renterStats"></div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">My Bills</h2>
+                </div>
+                <div id="renterBillsList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Payment History</h2>
+                </div>
+                <div id="renterPaymentsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Renter Modal -->
+    <div id="renterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="renterModalTitle">Add New Renter</h3>
+            </div>
+            <form id="renterForm">
+                <input type="hidden" id="renterId">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="renterName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="renterEmail" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Room Number</label>
+                    <input type="text" class="form-input" id="renterRoom" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Monthly Rent (₹)</label>
+                    <input type="number" class="form-input" id="renterRent" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Wifi Bill (₹)</label>
+                    <input type="number" class="form-input" id="renterWifi" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Electricity Bill (₹)</label>
+                    <input type="number" class="form-input" id="renterElectricity" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeRenterModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Renter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Bill Modal -->
+    <div id="billModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Bill</h3>
+            </div>
+            <form id="billForm">
+                <div class="form-group">
+                    <label class="form-label">Select Renter</label>
+                    <select class="form-select" id="billRenter" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bill Type</label>
+                    <select class="form-select" id="billType" required>
+                        <option value="Room Rent">Room Rent</option>
+                        <option value="Wifi Bill">Wifi Bill</option>
+                        <option value="Electricity">Electricity</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="Water Bill">Water Bill</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Amount (₹)</label>
+                    <input type="number" class="form-input" id="billAmount" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Due Date</label>
+                    <input type="date" class="form-input" id="billDueDate" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeBillModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Bill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Database Class
+        class Database {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                if (!localStorage.getItem('renters')) {
+                    localStorage.setItem('renters', JSON.stringify([
+                        {
+                            id: '1',
+                            name: 'John Doe',
+                            email: 'renter@renttrack.com',
+                            password: 'renter123',
+                            room: '201',
+                            monthlyRent: 8000,
+                            wifiBill: 500,
+                            electricityBill: 1200
+                        }
+                    ]));
+                }
+                if (!localStorage.getItem('bills')) {
+                    localStorage.setItem('bills', JSON.stringify([]));
+                }
+                if (!localStorage.getItem('payments')) {
+                    localStorage.setItem('payments', JSON.stringify([]));
+                }
+            }
+
+            getRenters() {
+                return JSON.parse(localStorage.getItem('renters') || '[]');
+            }
+
+            saveRenters(renters) {
+                localStorage.setItem('renters', JSON.stringify(renters));
+            }
+
+            addRenter(renter) {
+                const renters = this.getRenters();
+                renter.id = Date.now().toString();
+                renter.password = 'renter123';
+                renters.push(renter);
+                this.saveRenters(renters);
+                return renter;
+            }
+
+            updateRenter(id, data) {
+                const renters = this.getRenters();
+                const index = renters.findIndex(r => r.id === id);
+                if (index !== -1) {
+                    renters[index] = { ...renters[index], ...data };
+                    this.saveRenters(renters);
+                }
+            }
+
+            deleteRenter(id) {
+                let renters = this.getRenters();
+                renters = renters.filter(r => r.id !== id);
+                this.saveRenters(renters);
+                
+                let bills = this.getBills();
+                bills = bills.filter(b => b.renterId !== id);
+                this.saveBills(bills);
+            }
+
+            getBills() {
+                return JSON.parse(localStorage.getItem('bills') || '[]');
+            }
+
+            saveBills(bills) {
+                localStorage.setItem('bills', JSON.stringify(bills));
+            }
+
+            addBill(bill) {
+                const bills = this.getBills();
+                bill.id = Date.now().toString();
+                bill.status = 'pending';
+                bill.createdAt = new Date().toISOString();
+                bills.push(bill);
+                this.saveBills(bills);
+                return bill;
+            }
+
+            deleteBill(id) {
+                let bills = this.getBills();
+                bills = bills.filter(b => b.id !== id);
+                this.saveBills(bills);
+            }
+
+            markBillPaid(billId) {
+                const bills = this.getBills();
+                const bill = bills.find(b => b.id === billId);
+                if (bill) {
+                    bill.status = 'paid';
+                    bill.paidDate = new Date().toISOString();
+                    this.saveBills(bills);
+
+                    const payments = this.getPayments();
+                    payments.push({
+                        id: Date.now().toString(),
+                        billId: billId,
+                        renterId: bill.renterId,
+                        amount: bill.amount,
+                        type: bill.type,
+                        date: new Date().toISOString()
+                    });
+                    this.savePayments(payments);
+                }
+            }
+
+            getPayments() {
+                return JSON.parse(localStorage.getItem('payments') || '[]');
+            }
+
+            savePayments(payments) {
+                localStorage.setItem('payments', JSON.stringify(payments));
+            }
+        }
+
+        const db = new Database();
+        let currentUser = null;
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const alert = document.getElementById('loginAlert');
+
+            if (email === 'admin@renttrack.com' && password === 'admin123') {
+                currentUser = { email, role: 'admin' };
+                alert.innerHTML = '<div class="alert alert-success">✓ Login successful!</div>';
+                setTimeout(() => {
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('adminDashboard').classList.add('active');
+                    loadAdminDashboard();
+                }, 500);
+                return;
+            }
+
+            const renters = db.getRenters();
+            const renter = renters.find(r => r.email === email && r.password === password);
+            
+            if (renter) {
+                currentUser = { ...renter, role: 'renter' };
+                alert.innerHTML = '<div class="alert alert-success">✓ Login successful!</div>';
+                setTimeout(() => {
+                    document.getElementById('loginPage').style.display = 'none';
+                    document.getElementById('renterDashboard').classList.add('active');
+                    loadRenterDashboard();
+                }, 500);
+            } else {
+                alert.innerHTML = '<div class="alert alert-error">✗ Invalid credentials</div>';
+            }
+        });
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('adminDashboard').classList.remove('active');
+            document.getElementById('renterDashboard').classList.remove('active');
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginAlert').innerHTML = '';
+        }
+
+        // Admin Dashboard
+        function loadAdminDashboard() {
+            const renters = db.getRenters();
+            const bills = db.getBills();
+            const payments = db.getPayments();
+
+            const pending = bills.filter(b => b.status === 'pending');
+            const outstanding = pending.reduce((sum, b) => sum + parseFloat(b.amount), 0);
+            const collected = payments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+
+            document.getElementById('adminStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Renters</div>
+                    <div class="stat-value">${renters.length}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Outstanding Dues</div>
+                    <div class="stat-value">₹${outstanding.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Collected</div>
+                    <div class="stat-value">₹${collected.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Bills</div>
+                    <div class="stat-value">${pending.length}</div>
+                </div>
+            `;
+
+            renderRenters();
+            renderBills();
+            renderPayments();
+        }
+
+        function renderRenters() {
+            const renters = db.getRenters();
+            const bills = db.getBills();
+            const container = document.getElementById('rentersList');
+
+            if (renters.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>No renters yet. Add your first renter!</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Room</th>
+                            <th>Email</th>
+                            <th>Rent</th>
+                            <th>Dues</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${renters.map(r => {
+                            const renterBills = bills.filter(b => b.renterId === r.id && b.status === 'pending');
+                            const dues = renterBills.reduce((sum, b) => sum + parseFloat(b.amount), 0);
+                            return `
+                                <tr>
+                                    <td><strong>${r.name}</strong></td>
+                                    <td>${r.room}</td>
+                                    <td>${r.email}</td>
+                                    <td>₹${r.monthlyRent.toLocaleString()}</td>
+                                    <td><span class="badge ${dues > 0 ? 'badge-danger' : 'badge-success'}">₹${dues.toLocaleString()}</span></td>
+                                    <td>
+                                        <button class="btn-sm btn-primary" onclick="editRenter('${r.id}')">Edit</button>
+                                        <button class="btn-sm btn-danger" onclick="deleteRenter('${r.id}')">Delete</button>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderBills() {
+            const bills = db.getBills();
+            const renters = db.getRenters();
+            const container = document.getElementById('billsList');
+
+            if (bills.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📄</div><p>No bills created yet</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Renter</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bills.map(b => {
+                            const renter = renters.find(r => r.id === b.renterId);
+                            return `
+                                <tr>
+                                    <td><strong>${renter ? renter.name : 'Unknown'}</strong><br><small>Room ${renter ? renter.room : 'N/A'}</small></td>
+                                    <td>${b.type}</td>
+                                    <td><strong>₹${parseFloat(b.amount).toLocaleString()}</strong></td>
+                                    <td>${new Date(b.dueDate).toLocaleDateString()}</td>
+                                    <td><span class="badge badge-${b.status === 'paid' ? 'success' : 'warning'}">${b.status.toUpperCase()}</span></td>
+                                    <td>
+                                        ${b.status === 'pending' ? `<button class="btn-sm btn-success" onclick="markPaid('${b.id}')">Mark Paid</button>` : ''}
+                                        <button class="btn-sm btn-danger" onclick="deleteBill('${b.id}')">Delete</button>
+                                    </td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderPayments() {
+            const payments = db.getPayments();
+            const renters = db.getRenters();
+            const container = document.getElementById('paymentsList');
+
+            if (payments.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">💳</div><p>No payments recorded yet</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Renter</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${payments.map(p => {
+                            const renter = renters.find(r => r.id === p.renterId);
+                            return `
+                                <tr>
+                                    <td><strong>${renter ? renter.name : 'Unknown'}</strong></td>
+                                    <td>${p.type}</td>
+                                    <td><strong>₹${parseFloat(p.amount).toLocaleString()}</strong></td>
+                                    <td>${new Date(p.date).toLocaleDateString()}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Renter Dashboard
+        function loadRenterDashboard() {
+            const bills = db.getBills().filter(b => b.renterId === currentUser.id);
+            const payments = db.getPayments().filter(p => p.renterId === currentUser.id);
+            
+            const pending = bills.filter(b => b.status === 'pending');
+            const dues = pending.reduce((sum, b) => sum + parseFloat(b.amount), 0);
+            const paid = payments.reduce((sum, p) => sum + parseFloat(p.amount), 0);
+
+            document.getElementById('renterStats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-label">Total Dues</div>
+                    <div class="stat-value">₹${dues.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending Bills</div>
+                    <div class="stat-value">${pending.length}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Paid</div>
+                    <div class="stat-value">₹${paid.toLocaleString()}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Room Number</div>
+                    <div class="stat-value">${currentUser.room}</div>
+                </div>
+            `;
+
+            renderRenterBills(bills);
+            renderRenterPayments(payments);
+        }
+
+        function renderRenterBills(bills) {
+            const container = document.getElementById('renterBillsList');
+            
+            if (bills.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">📄</div><p>No bills yet</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bills.map(b => `
+                            <tr>
+                                <td><strong>${b.type}</strong></td>
+                                <td><strong>₹${parseFloat(b.amount).toLocaleString()}</strong></td>
+                                <td>${new Date(b.dueDate).toLocaleDateString()}</td>
+                                <td><span class="badge badge-${b.status === 'paid' ? 'success' : 'warning'}">${b.status.toUpperCase()}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function renderRenterPayments(payments) {
+            const container = document.getElementById('renterPaymentsList');
+            
+            if (payments.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div class="empty-icon">💳</div><p>No payments yet</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${payments.map(p => `
+                            <tr>
+                                <td><strong>${p.type}</strong></td>
+                                <td><strong>₹${parseFloat(p.amount).toLocaleString()}</strong></td>
+                                <td>${new Date(p.date).toLocaleDateString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Renter Modal
+        function openAddRenterModal() {
+            document.getElementById('renterModalTitle').textContent = 'Add New Renter';
+            document.getElementById('renterForm').reset();
+            document.getElementById('renterId').value = '';
+            document.getElementById('renterModal').classList.add('active');
+        }
+
+        function editRenter(id) {
+            const renter = db.getRenters().find(r => r.id === id);
+            if (!renter) return;
+
+            document.getElementById('renterModalTitle').textContent = 'Edit Renter';
+            document.getElementById('renterId').value = renter.id;
+            document.getElementById('renterName').value = renter.name;
+            document.getElementById('renterEmail').value = renter.email;
+            document.getElementById('renterRoom').value = renter.room;
+            document.getElementById('renterRent').value = renter.monthlyRent;
+            document.getElementById('renterWifi').value = renter.wifiBill;
+            document.getElementById('renterElectricity').value = renter.electricityBill;
+            document.getElementById('renterModal').classList.add('active');
+        }
+
+        function closeRenterModal() {
+            document.getElementById('renterModal').classList.remove('active');
+        }
+
+        document.getElementById('renterForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('renterId').value;
+            const data = {
+                name: document.getElementById('renterName').value,
+                email: document.getElementById('renterEmail').value,
+                room: document.getElementById('renterRoom').value,
+                monthlyRent: parseFloat(document.getElementById('renterRent').value),
+                wifiBill: parseFloat(document.getElementById('renterWifi').value),
+                electricityBill: parseFloat(document.getElementById('renterElectricity').value)
+            };
+
+            if (id) {
+                db.updateRenter(id, data);
+            } else {
+                db.addRenter(data);
+            }
+
+            closeRenterModal();
+            loadAdminDashboard();
+        });
+
+        function deleteRenter(id) {
+            if (confirm('Delete this renter and all associated bills?')) {
+                db.deleteRenter(id);
+                loadAdminDashboard();
+            }
+        }
+
+        // Bill Modal
+        function openAddBillModal() {
+            const renters = db.getRenters();
+            const select = document.getElementById('billRenter');
+            select.innerHTML = renters.map(r => 
+                `<option value="${r.id}">${r.name} - Room ${r.room}</option>`
+            ).join('');
+            
+            document.getElementById('billForm').reset();
+            document.getElementById('billModal').classList.add('active');
+        }
+
+        function closeBillModal() {
+            document.getElementById('billModal').classList.remove('active');
+        }
+
+        document.getElementById('billForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const bill = {
+                renterId: document.getElementById('billRenter').value,
+                type: document.getElementById('billType').value,
+                amount: parseFloat(document.getElementById('billAmount').value),
+                dueDate: document.getElementById('billDueDate').value
+            };
+
+            db.addBill(bill);
+            closeBillModal();
+            loadAdminDashboard();
+        });
+
+        function deleteBill(id) {
+            if (confirm('Delete this bill?')) {
+                db.deleteBill(id);
+                loadAdminDashboard();
+            }
+        }
+
+        function markPaid(id) {
+            if (confirm('Mark this bill as paid?')) {
+                db.markBillPaid(id);
+                loadAdminDashboard();
+            }
+        }
+    </script>
+</body>
+</html>
