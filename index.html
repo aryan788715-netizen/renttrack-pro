@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RentTrack Pro - Fully Functional</title>
+    <title>RentTrack Pro - Rental Management System</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -97,15 +97,6 @@
         .btn-secondary { background: #64748b; color: white; }
 
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        .demo-info {
-            margin-top: 20px;
-            padding: 16px;
-            background: var(--bg);
-            border-radius: 8px;
-            font-size: 13px;
-            line-height: 1.6;
-        }
 
         /* Dashboard */
         .dashboard { display: none; }
@@ -284,24 +275,19 @@
     <div id="loginPage" class="login-page">
         <div class="login-card">
             <h1 class="login-title">RentTrack Pro</h1>
-            <p class="login-subtitle">Fully Functional Rental Management</p>
+            <p class="login-subtitle">Rental Management System</p>
             <div id="loginAlert"></div>
             <form id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="loginEmail" required>
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" id="loginEmail" required placeholder="Enter your email">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="loginPassword" required>
+                    <input type="password" class="form-input" id="loginPassword" required placeholder="Enter your password">
                 </div>
                 <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
-            <div class="demo-info">
-                <strong>Demo Credentials:</strong><br>
-                <strong>Admin:</strong> admin@renttrack.com / admin123<br>
-                <strong>Renter:</strong> renter@renttrack.com / renter123
-            </div>
         </div>
     </div>
 
